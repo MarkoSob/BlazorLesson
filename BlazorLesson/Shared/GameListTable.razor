@@ -1,0 +1,96 @@
+﻿<div class="row mb-3">
+    <div class="col">
+        <select class="btn btn-toolbar border dropdown-toggle" style="text-align:left" @onchange="ChangeTableStyle">
+            <option selected value="">Choose Table Style</option>
+            @foreach (var item in AppStyle.TableStyles)
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table @currentTableStyle">
+        <thead class="thead-light">
+            <tr>
+                <th>Name</th>
+                <th>Genre</th>
+                <th>Release Date</th>
+                <th>
+                    <input type="checkbox" @bind="displayButtons" />
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <GenericList ListOfItems="Games">
+                <ItemTemplate Context="game">
+                    <IndividualGame Game="game" IsTable="true" DisplayButtons="displayButtons" DeleteGame="DeleteGame" />
+                </ItemTemplate>
+            </GenericList>
+            <Confirmation @ref="confirmation" OnCancel="OnCancel" OnConfirm="OnConfirm">
+                <div class="text-danger">Do you want to delete @gameToDelete.Name</div>
+            </Confirmation>
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [CascadingParameter]
+    public AppStyle AppStyle { get; set; }
+
+    [Parameter]
+    public List<Game> Games { get; set; }
+
+    private bool displayButtons = false;
+
+    private Confirmation confirmation;
+
+    private Game gameToDelete;
+
+    private string currentTableStyle = "table-striped";
+
+    private void DeleteGame(Game game)
+    {
+        gameToDelete = game;
+        confirmation.ShowConfirmationWindow();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet() // after OnInitialized or after parameters change
+    {
+        base.OnParametersSet();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+    }
+
+    protected override bool ShouldRender() // - return false = forbidden to rerender element
+    {
+        return base.ShouldRender();
+    }
+
+    public void OnConfirm()
+    {
+        Games.Remove(gameToDelete);
+        gameToDelete = null;
+        confirmation.HideConfirmationWindow();
+    }
+
+    public void OnCancel()
+    {
+        confirmation.HideConfirmationWindow();
+        gameToDelete = null;
+    }
+
+    public void ChangeTableStyle(ChangeEventArgs currentItem)
+    {
+        currentTableStyle = currentItem.Value.ToString();
+    }
+}

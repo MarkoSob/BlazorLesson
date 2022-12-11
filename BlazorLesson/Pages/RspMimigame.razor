@@ -1,0 +1,60 @@
+﻿@page "/rsp"
+@using System.Timers;
+@implements IDisposable
+
+<div class="row">
+    <div class="col">
+        <h1 class="text-primary">
+            Minigame
+        </h1>
+    </div>
+</div>
+
+<div class="row text-center">
+    <div class="col mb-5 justify-content-center">
+        Paper
+    </div>
+</div>
+
+<div class="row text-center">
+    <div class="col mb-5 justify-content-center">
+        <button class="btn btn-primary"> Start</button>
+    </div>
+</div>
+
+<div class="row text-center justify-content-around">
+    <div class="col">
+        Paper
+    </div>
+     <div class="col">
+        Scissors
+    </div>
+     <div class="col">
+        Rock
+    </div>
+</div>
+
+@code {
+    private Timer timer;
+
+    protected override void OnInitialized()
+    {
+        timer = new Timer();
+        timer.Interval = 100;
+        timer.Elapsed += ElapsedTimer;
+        timer.Start();
+    }
+
+    public void ElapsedTimer(object sender, ElapsedEventArgs args)
+    {
+        Console.WriteLine("Done");
+    }
+
+    public void Dispose()
+    {
+        if(timer != null)
+        {
+            timer.Dispose();
+        }
+    }
+}

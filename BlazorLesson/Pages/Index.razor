@@ -1,0 +1,104 @@
+﻿@page "/"
+@using BlazorLesson.Repository
+@inject IGenericRepository<Game> _repository
+
+<div class="row">
+    <div class="col text-center">
+        <h1>Welcome to our game page</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col text-center">
+        <h2>Show all games:</h2>
+    </div>
+</div>
+
+<GameListTable Games="games"/>
+<IndividualGame Game="gameToShow" IsTable = "false" DisplayButtons = "true" SwitchGame = "ShowNewGame"/>
+
+<div class = "row">
+    <div class = "col text-center">
+        <button @onclick = "AddNewGame" class = "btn btn-success">
+            Add Game
+        </button>
+    </div>
+</div>
+
+ @code {
+    private List<Game> games;
+    private Random random;
+    private Game gameToShow;
+   
+
+    protected async override Task OnInitializedAsync()
+    {
+        _repository = new GenericRepository<Game>(new List<Game>()
+        {
+            new Game()
+            {
+                Name = "Shot",
+                Genre = "Arcade",
+                ReleaseDate = new DateTime(2018,11,19)
+            },
+            new Game()
+            {
+                Name = "Witcher",
+                Genre = "RPG",
+                ReleaseDate = new DateTime(2015,11,19)
+            },
+            new Game()
+            {
+                Name = "Cossaks",
+                Genre = "Strategy",
+                ReleaseDate = new DateTime(2017,01,19)
+            },
+        });
+
+        games = _repository.GetAll().ToList();
+
+        random = new Random(DateTime.Now.Millisecond);
+        gameToShow = games[random.Next(0, games.Count)];
+    }
+
+    private void ShowNewGame()
+    {
+        gameToShow = SwitchGame();
+    }
+
+    private Game SwitchGame()
+    {
+        Game tempGame;
+
+        if (games.Count >= 2)
+        {
+            int iterator = random.Next(0, games.Count);
+            tempGame = games[iterator];
+        }
+        else if (games.Count == 1)
+        {
+            tempGame = games[0];
+        }
+        else
+        {
+            return new Game()
+                {
+                    Name = "No Items to show",
+                    ReleaseDate = DateTime.Now
+
+                };
+        }
+
+        return tempGame;
+    }
+
+    private void AddNewGame()
+    {
+        games.Add(new Game()
+            {
+                Name = "Test",
+                Genre = "Test",
+                ReleaseDate = DateTime.Now
+            });
+    }
+ }
