@@ -35,26 +35,5 @@
 </div>
 
 @code {
-    private Timer timer;
-
-    protected override void OnInitialized()
-    {
-        timer = new Timer();
-        timer.Interval = 100;
-        timer.Elapsed += ElapsedTimer;
-        timer.Start();
-    }
-
-    public void ElapsedTimer(object sender, ElapsedEventArgs args)
-    {
-        Console.WriteLine("Done");
-    }
-
-    public void Dispose()
-    {
-        if(timer != null)
-        {
-            timer.Dispose();
-        }
-    }
+   
 }
